@@ -54,7 +54,10 @@ class ShellEmulator:
             return
         path = self.resolve_path(args[0])
         if os.path.isdir(path):
-            self.current_dir = path
+            if args[0] == '/':
+                self.current_dir = '/'
+            else:
+                self.current_dir = path
         else:
             print(f"{path}: No such directory")
 
@@ -69,6 +72,8 @@ class ShellEmulator:
             os.utime(path, None)
 
     def resolve_path(self, path):
+        if path == '/':
+            return self.fs_root
         if path.startswith('/'):
             return os.path.join(self.fs_root, path.lstrip('/'))
         return os.path.join(self.fs_root, self.current_dir.lstrip('/'), path)
